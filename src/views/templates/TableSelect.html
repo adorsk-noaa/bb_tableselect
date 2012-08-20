@@ -1,15 +1,26 @@
 <div class="inner">
 
     <div class="table-container">
-        <table class="table choices-table">
-            <thead>
-                <tr>
-                    <% _.each(columns, function(column) { %>
-                    <th><%= column.label %></th>
-                    <% }) %>
-                </tr>
-            </thead>
-        </table>
+        <div class="inner">
+            <table class="table choices-table">
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <% _.each(columns, function(column) { %>
+                        <th><%= column.label %></th>
+                        <% }) %>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div class="add-choice-container">
+        <div class="inner">
+            <div class="add-choice-button">
+                Add Choice
+            </div>
+        </div>
     </div>
 
 </div>
