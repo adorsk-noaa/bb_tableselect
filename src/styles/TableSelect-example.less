@@ -1,7 +1,23 @@
 @import "rounded-corners.less";
 @import "button.less";
+@import url("DataTables_styles/jquery.dataTables.css");
 
 .table-select{
+    .table{
+        display: table;
+        height: 100%;
+        width: 100%;
+
+        .row {
+            display: table-row;
+
+            .cell{
+                display: table-cell;
+                vertical-align: top;
+            }
+        }
+    }
+
     > .inner{
         height: 100%;
         width: 100%;
@@ -9,41 +25,35 @@
 
         @addChoice_h: 50px;
 
-        > .table-container{
-            position: absolute;
-            top: 0;
-            bottom: @addChoice_h;
-            left: 0;
-            right: 0;
+        .table-container > .inner{
 
-            > .inner{
+            .choices-table{
+                height: 100%;
+                width: 100%;
+                border-spacing: 0;
 
-                .choices-table{
-                    height: 100%;
-                    width: 100%;
-                    border-spacing: 0;
-
-                    .choice-row {
-                        &.selected{
-                            background-color: #bcf;
-                        }
+                .choice-row {
+                    &.selected{
+                        background-color: #bcf;
                     }
                 }
             }
         }
 
-        > .add-choice-container{
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: @addChoice_h;
-            text-align: center;
+        .controls-container {
+            height: 1px;
 
             > .inner{
-                > .add-choice-button{
-                    .button;
-                    display: inline-block;
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+
+                > .controls{
+                    > .control{
+                        .button;
+                        display: inline-block;
+                        margin: 2px 3px;
+                    }
                 }
             }
         }

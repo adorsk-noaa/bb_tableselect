@@ -42,6 +42,13 @@ function($, Backbone, _, ui, _s, DataTables, template){
             this.on('resize', this.resize, this);
             this.on('ready', this.ready, this);
 
+            this.choices.on('add', function(model, collection, data){
+                this.addChoice({
+                    model: model,
+                    animate: true
+                });
+            }, this);
+
             this.model.on('change:selection', this.onSelectionChange, this);
         },
 
@@ -52,6 +59,13 @@ function($, Backbone, _, ui, _s, DataTables, template){
                 opts: this.opts
             });
             $(this.el).html(content);
+
+            // Add controls.
+            $controls = $('.controls-container .controls', this.el);
+            _.each(this.opts.controls, function($control){
+                $control.addClass('control');
+                $controls.append($control);
+            }, this);
 
             this.$tableContainer = $('.table-container', this.el);
             this.dataTable = $('.choices-table', this.el).dataTable(_.extend({
@@ -71,7 +85,7 @@ function($, Backbone, _, ui, _s, DataTables, template){
 
             this.$scrollBody = $('.dataTables_scrollBody', this.$tableContainer);
             this.$scrollTable = $('.choices-table', this.$scrollBody)
-            //this.renderChoices();
+            this.renderChoices();
         },
 
         formatColumns: function(){
@@ -149,10 +163,25 @@ function($, Backbone, _, ui, _s, DataTables, template){
             $selectedRow.addClass('selected');
         },
 
+        addChoice: function(opts){
+            opts = opts || {};
+            var formattedChoice = this.formatChoice(opts.model);
+
+            this.dataTable.fnAddData(formattedChoice);
+            if (opts.animate){
+                var $row =  this.getRowById(opts.model.id);
+                $row.hide();
+                $row.fadeIn(1500);
+                targetScrollTop = $row.offset().top - this.$scrollTable.offset().top;
+                this.$scrollBody.scrollTop(targetScrollTop);
+            }
+        },
+
         clickAddChoice: function(){
-            //var id = Math.round(50 * Math.random());
-            var id = Math.random();
-            console.log("new id is: ", id);
+            if (! this.inc){
+                this.inc = 1;
+            }
+            var id = (this.inc % 2) ? 100 + this.inc : 50 - this.inc;
             var choice = new Backbone.Model({
                 id: id,
                 field_a: 'field_a_' + id,
@@ -169,10 +198,8 @@ function($, Backbone, _, ui, _s, DataTables, template){
             $row.fadeIn(1500);
 
             targetScrollTop = $row.offset().top - this.$scrollTable.offset().top;
-
-            this.$scrollBody.animate({
-                scrollTop: targetScrollTop
-            }, 500);
+            this.$scrollBody.scrollTop(targetScrollTop);
+            this.inc += 1;
         },
 
         getRowById: function(id){
