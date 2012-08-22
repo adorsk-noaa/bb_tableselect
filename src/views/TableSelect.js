@@ -33,7 +33,6 @@ function($, Backbone, _, ui, _s, DataTables, template){
             }, this);
             this.choices = this.model.get('choices');
 
-            this.formatter = this.opts.formatter || _s.sprintf;
             this.columns = this.opts.columns || [];
             this.selectionLabelAttr = this.opts.selectionLabelAttr || 'id';
             this.selectionValueAttr = this.opts.selectionValueAttr || 'id';
@@ -110,14 +109,13 @@ function($, Backbone, _, ui, _s, DataTables, template){
             // id column.
             var formattedColumns = [{
                 bVisible: false,
-                sTitle: 'id'
+                sTitle: 'id',
+                mData: 'id'
             }];
 
             // Format remaining columns.
             _.each(this.columns, function(column){
-                formattedColumns.push({
-                    sTitle: column.field
-                })
+                formattedColumns.push(column);
             }, this);
 
             return formattedColumns;
@@ -139,18 +137,7 @@ function($, Backbone, _, ui, _s, DataTables, template){
         },
 
         formatChoice: function(choiceModel){
-            var formattedChoice = [choiceModel.id];
-            _.each(this.columns, function(column){
-                var val = choiceModel.get(column.field);
-                if (val == undefined){
-                    val = "";
-                }
-                if (column.format){
-                    val = this.formatter(column.format, val);
-                }
-                formattedChoice.push(val);
-            }, this);
-            return formattedChoice;
+            return choiceModel.toJSON();
         },
 
         resize: function(){
