@@ -88,7 +88,7 @@ function($, Backbone, _, ui, _s, DataTables, template){
                 // Decorate created rows.
                 fnCreatedRow: function(rowEl, data, idx){
                     // Add choice id to row.
-                    $(rowEl).data('id', data[0]);
+                    $(rowEl).data('id', data.id);
                     // Add 'choice-row' class.
                     $(rowEl).addClass('choice-row');
                 }
