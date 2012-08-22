@@ -2,11 +2,19 @@
 @import "button.less";
 @import url("DataTables_styles/jquery.dataTables.css");
 
+@padding_tighter: 3px;
+@padding_tight: 5px;
+@padding_normal: 7px;
+@padding_loose: 10px;
+@padding_looser: 15px;
+
 .table-select{
     .table{
         display: table;
         height: 100%;
         width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
 
         .row {
             display: table-row;
@@ -27,18 +35,50 @@
 
         .header-container {
             height: 1px;
+
+            > .inner {
+                .rounded_corners_top;
+                background-color: #ccc;
+                padding: @padding_normal;
+
+
+                .controls{
+                    a {
+                        color: inherit;
+                    }
+
+                    .control {
+                        float: right;
+                    }
+                }
+
+                .selection{
+                    font-size: 125%;
+                    > .value{
+                        font-weight: bold;
+                    }
+                }
+            }
         }
 
-        .table-container > .inner{
+        .table-container {
+            > .inner{
+                background-color: white;
+                border-color: #ddd;
+                border-style: solid;
+                border-width: 0 thin;
 
-            .choices-table{
-                height: 100%;
-                width: 100%;
-                border-spacing: 0;
+                .choices-table{
+                    height: 100%;
+                    width: 100%;
+                    border-spacing: 0;
 
-                .choice-row {
-                    &.selected{
-                        background-color: #bcf;
+                    .choice-row {
+                        cursor: pointer;
+
+                        &.selected{
+                            background-color: #ccc;
+                        }
                     }
                 }
             }
@@ -48,13 +88,15 @@
             height: 1px;
 
             > .inner{
+                .rounded_corners_bottom;
+                background-color: #ccc;
                 margin-left: auto;
                 margin-right: auto;
                 text-align: center;
+                padding: @padding_normal;
 
                 > .controls{
                     > .control{
-                        .button;
                         display: inline-block;
                         margin: 2px 3px;
                     }
@@ -65,12 +107,35 @@
 
     // Override datatable defaults.
     table.dataTable {
+        thead {
+            th {
+                font-weight: normal;
+                font-style: italic;
+                border: 0;
+                text-align: left;
+                text-decoration: underline;
+            }
+        }
         tr.even, tr.odd {
+
+            &:hover{
+                background-color: #ddd;
+            }
+
             td{
                 &.sorting_1, &.sorting_2, &.sorting_3 {
                     background-color: inherit;
                 }
             }
         }
+
+        tr.odd{
+            background-color: #efefef;
+        }
+
+        td {
+            padding: 3px @padding_normal;
+        }
     }
+
 }

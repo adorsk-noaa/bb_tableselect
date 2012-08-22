@@ -142,6 +142,9 @@ function($, Backbone, _, ui, _s, DataTables, template){
             var formattedChoice = [choiceModel.id];
             _.each(this.columns, function(column){
                 var val = choiceModel.get(column.field);
+                if (val == undefined){
+                    val = "";
+                }
                 if (column.format){
                     val = this.formatter(column.format, val);
                 }
@@ -166,8 +169,13 @@ function($, Backbone, _, ui, _s, DataTables, template){
             var $row = $(event.currentTarget);
             var rowId = $row.data('id');
 
+            var selection = rowId;
+            if ($row.hasClass('selected')){
+                selection = null;
+            }
+
             // Update model selection.
-            this.model.set('selection', rowId);
+            this.model.set('selection', selection);
         },
 
         onSelectionChange: function(){
