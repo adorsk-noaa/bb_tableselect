@@ -12,7 +12,8 @@ function($, Backbone, _, ui, _s, DataTables, template){
 	var TableSelectView = Backbone.View.extend({
 		events: {
             'click tr.choice-row': 'onRowClicked',
-            'click .add-choice-button': 'clickAddChoice'
+            'click .add-choice-button': 'clickAddChoice',
+			"click .reset-button": "clearSelection"
         },
 
 		initialize: function(opts){
@@ -35,11 +36,16 @@ function($, Backbone, _, ui, _s, DataTables, template){
             this.formatter = this.opts.formatter || _s.sprintf;
             this.columns = this.opts.columns || [];
             this.selectionLabelAttr = this.opts.selectionLabelAttr || 'id';
+            this.selectionValueAttr = this.opts.selectionValueAttr || 'id';
+            this.inputName = this.opts.inputName || this.cid;
 
             this.initialRender();
         },
         
         postInitialize: function(){
+            // Add reset control to title controls.
+            this.addResetButton();
+
             // Listen for events.
             this.on('resize', this.resize, this);
             this.on('ready', this.ready, this);
@@ -52,12 +58,16 @@ function($, Backbone, _, ui, _s, DataTables, template){
             }, this);
 
             this.model.on('change:selection', this.onSelectionChange, this);
+
+            // Initialize with initial selection.
+            this.onSelectionChange();
         },
 
         initialRender: function(){
             var content = _.template(template, {
                 model: this.model,
                 columns: this.columns,
+                inputName: this.inputName,
                 opts: this.opts
             });
             $(this.el).html(content);
@@ -88,6 +98,11 @@ function($, Backbone, _, ui, _s, DataTables, template){
             this.$scrollBody = $('.dataTables_scrollBody', this.$tableContainer);
             this.$scrollTable = $('.choices-table', this.$scrollBody)
             this.renderChoices();
+        },
+
+        addResetButton: function(){
+            this.$reset = $('<a class="control facet-reset-button" href="javascript:{}" style="visibility:hidden;">reset</a>');
+            this.$reset.appendTo($('.header', this.el));
         },
 
         formatColumns: function(){
@@ -159,16 +174,29 @@ function($, Backbone, _, ui, _s, DataTables, template){
             // Deselect selected row.
             $('.choice-row.selected', this.el).removeClass('selected');
 
-            // Get selected row.
             var selection = this.model.get('selection');
-            var choice = this.choices.get(selection);
-            var $selectedRow = this.getRowById(selection);
-            $selectedRow.addClass('selected');
+            var selectionText = "";
+            var selectionValue = "";
+            // If there was a selection, set selected row and 
+            // status text.
+            if (selection != undefined){
+                var choice = this.choices.get(selection);
+                var $selectedRow = this.getRowById(selection);
+                $selectedRow.addClass('selected');
+                selectionText = choice.get(this.selectionLabelAttr);
+                selectionValue = choice.get(this.selectionValueAttr);
+            }
+            else{
+                var selectionText = "---";
+            }
 
-            // Set status text.
-            var selectionText = choice.get(this.selectionLabelAttr);
-            var $valueEl = $('.status .selection > .value', this.el);
-            $valueEl.html(selectionText);
+            var $selectionTextEl = $('.header .selection > .value', this.el);
+            $selectionTextEl.html(selectionText);
+
+            $valueInput = $('.inner > input[type="hidden"]', this.el);
+            $valueInput.val(selectionValue);
+
+            this.updateResetButton();
         },
 
         addChoice: function(opts){
@@ -216,6 +244,20 @@ function($, Backbone, _, ui, _s, DataTables, template){
             });
             return $row;
         },
+
+        clearSelection: function(){
+            this.model.set('selection', null);
+        },
+
+		updateResetButton: function(){
+			// If anything was selected, show reset button.
+            var visibility = 'hidden';
+            var selection = this.model.get('selection');
+            if (typeof selection != 'undefined' && selection != null){
+                visibility = 'visible';
+            }
+            $('.reset-button', this.el).css('visibility', visibility);
+		},
 
 	});
 
