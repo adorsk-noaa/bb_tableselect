@@ -19,13 +19,9 @@ function($, Backbone, _, ui, _s, DataTables, template){
             $(this.el).addClass('table-select');
             this.opts = opts || {};
 
-            this.formatter = this.opts.formatter || _s.sprintf;
-
 			if (! this.model){
 				this.model = new Backbone.Model();
 			}
-
-            this.columns = this.opts.columns || [];
 
             // Initialize sub collections.
             _.each(['choices'], function(attr){
@@ -36,8 +32,14 @@ function($, Backbone, _, ui, _s, DataTables, template){
             }, this);
             this.choices = this.model.get('choices');
 
-            this.initialRender();
+            this.formatter = this.opts.formatter || _s.sprintf;
+            this.columns = this.opts.columns || [];
+            this.selectionLabelAttr = this.opts.selectionLabelAttr || 'id';
 
+            this.initialRender();
+        },
+        
+        postInitialize: function(){
             // Listen for events.
             this.on('resize', this.resize, this);
             this.on('ready', this.ready, this);
@@ -159,8 +161,14 @@ function($, Backbone, _, ui, _s, DataTables, template){
 
             // Get selected row.
             var selection = this.model.get('selection');
+            var choice = this.choices.get(selection);
             var $selectedRow = this.getRowById(selection);
             $selectedRow.addClass('selected');
+
+            // Set status text.
+            var selectionText = choice.get(this.selectionLabelAttr);
+            var $valueEl = $('.status .selection > .value', this.el);
+            $valueEl.html(selectionText);
         },
 
         addChoice: function(opts){
