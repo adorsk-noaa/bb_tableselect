@@ -39,6 +39,8 @@ function($, Backbone, _, ui, _s, DataTables, template){
             this.inputName = this.opts.inputName || this.cid;
 
             this.initialRender();
+
+            this.postInitialize();
         },
         
         postInitialize: function(){
