@@ -120,7 +120,12 @@
             background-color: inherit;
 
             &:hover{
-                background-color: #e3e9ff;
+                td {
+                    background-color: #e3e9ff;
+                    &.dataTables_empty{
+                        background-color: inherit;
+                    }
+                }
             }
 
             td{
