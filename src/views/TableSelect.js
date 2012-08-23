@@ -177,11 +177,11 @@ function($, Backbone, _, ui, _s, DataTables, template){
                 selectionValue = choice.get(this.selectionValueAttr);
             }
             else{
-                var selectionText = "---";
+                var selectionText = "";
             }
 
             var $selectionTextEl = $('.header .selection > .value', this.el);
-            $selectionTextEl.html(selectionText);
+            $selectionTextEl.val(selectionText);
 
             $valueInput = $('.inner > input[type="hidden"]', this.el);
             $valueInput.val(selectionValue);
