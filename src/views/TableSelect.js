@@ -12,7 +12,6 @@ function($, Backbone, _, ui, _s, DataTables, template){
 	var TableSelectView = Backbone.View.extend({
 		events: {
             'click tr.choice-row': 'onRowClicked',
-            'click .add-choice-button': 'clickAddChoice',
 			"click .reset-button": "clearSelection"
         },
 
@@ -81,11 +80,11 @@ function($, Backbone, _, ui, _s, DataTables, template){
             }, this);
 
             this.$tableContainer = $('.table-container', this.el);
-            this.dataTable = $('.choices-table', this.el).dataTable(_.extend({
+            this.$choicesTable = $('.choices-table', this.el);
+            this.dataTable = this.$choicesTable.dataTable(_.extend({
                 sDom: 't',
                 aoColumns: this.formatColumns(),
                 bPaginate: false,
-                sScrollY: 1,
 
                 // Decorate created rows.
                 fnCreatedRow: function(rowEl, data, idx){
@@ -96,8 +95,6 @@ function($, Backbone, _, ui, _s, DataTables, template){
                 }
             }, this.opts.tableOpts));
 
-            this.$scrollBody = $('.dataTables_scrollBody', this.$tableContainer);
-            this.$scrollTable = $('.choices-table', this.$scrollBody)
             this.renderChoices();
         },
 
@@ -143,11 +140,6 @@ function($, Backbone, _, ui, _s, DataTables, template){
         },
 
         resize: function(){
-            wrapper_h = $('.dataTables_wrapper', this.el).height();
-            container_h = this.$tableContainer.height();
-            target_h = container_h - wrapper_h;
-            this.$scrollBody.height(target_h);
-
         },
 
         ready: function(){
@@ -201,42 +193,16 @@ function($, Backbone, _, ui, _s, DataTables, template){
             var formattedChoice = this.formatChoice(opts.model);
 
             this.dataTable.fnAddData(formattedChoice);
+
             if (opts.animate){
                 var $row =  this.getRowById(opts.model.id);
                 $row.hide();
                 $row.fadeIn(1500);
-                targetScrollTop = $row.offset().top - this.$scrollTable.offset().top;
-                this.$scrollBody.scrollTop(targetScrollTop);
             }
-        },
-
-        clickAddChoice: function(){
-            if (! this.inc){
-                this.inc = 1;
-            }
-            var id = (this.inc % 2) ? 100 + this.inc : 50 - this.inc;
-            var choice = new Backbone.Model({
-                id: id,
-                field_a: 'field_a_' + id,
-                field_b: 'field_b_' + id,
-            });
-            var formattedChoice = this.formatChoice(choice);
-            this.dataTable.fnAddData(formattedChoice);
-
-            // Get created row.
-            var $row =  this.getRowById(id);
-
-            // Animate row.
-            $row.hide();
-            $row.fadeIn(1500);
-
-            targetScrollTop = $row.offset().top - this.$scrollTable.offset().top;
-            this.$scrollBody.scrollTop(targetScrollTop);
-            this.inc += 1;
         },
 
         getRowById: function(id){
-            var $row = $('.choice-row', this.$scrollTable).filter(function() { 
+            var $row = $('.choice-row', this.$choicesTable).filter(function() { 
                 return $(this).data('id') == id;
             });
             return $row;
