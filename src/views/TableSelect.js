@@ -85,6 +85,7 @@ function($, Backbone, _, ui, _s, DataTables, template){
                 sDom: 't',
                 aoColumns: this.formatColumns(),
                 bPaginate: false,
+                bAutoWidth: false,
 
                 // Decorate created rows.
                 fnCreatedRow: function(rowEl, data, idx){
