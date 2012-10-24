@@ -1,10 +1,10 @@
 define([
 	"jquery",
-	"use!backbone",
-	"use!underscore",
-	"use!ui",
+	"backbone",
+	"underscore",
+	"ui",
 	"_s",
-	"use!DataTables",
+	"DataTables",
 	"text!./templates/TableSelect.html",
 		],
 function($, Backbone, _, ui, _s, DataTables, template){
